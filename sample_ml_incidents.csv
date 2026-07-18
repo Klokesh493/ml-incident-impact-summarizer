@@ -1,0 +1,3 @@
+model,endpoint,affected_users
+ranker-v2,/rank,8000
+ranker-v2,/recommend,3500
