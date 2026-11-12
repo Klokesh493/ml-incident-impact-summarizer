@@ -2,7 +2,7 @@
 
 ## Business problem
 
-Summarizes ML incident blast radius from model, endpoint, feature, and customer segment data.
+When several models are affected, responders need to estimate endpoint coverage and customer impact from the incident records they have.
 
 ## Reproduce the workflow
 
