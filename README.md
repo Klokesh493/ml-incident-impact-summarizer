@@ -1,32 +1,12 @@
 # ML Incident Impact Summarizer
 
-Summarizes ML incident blast radius from model, endpoint, feature, and customer segment data.
-
-Focus: AI/ML platform incident response.
-
-Built as a small, runnable Python project with clear input, output, sample data, and tests.
-
-## Run
-
-```bash
-python3 ml_impact.py sample_ml_incidents.csv
-```
-
-## Verify
-
-```bash
-python3 -m unittest discover . -v
-```
-
-## Local verification
-
-Run `make verify` with Make and Python 3 installed. The target runs the documented sample through the project CLI. It also runs the existing Python unit tests.
-
-## Business problem
-
 When several models are affected, responders need to estimate endpoint coverage and customer impact from the incident records they have.
 
-## Project walkthrough
+## What I built
+
+I built a blast-radius summary that counts distinct models and endpoints, totals reported affected users, and assigns severity by user count and endpoint coverage.
+
+## How it works
 
 ```mermaid
 flowchart LR
@@ -40,41 +20,43 @@ flowchart LR
     C --> E
 ```
 
-[Architecture and data flow](docs/ARCHITECTURE.md) · [Business problem, demo, and verification](docs/CASE_STUDY.md)
+[Architecture](docs/ARCHITECTURE.md) · [Decision rules and source](docs/RULES.md)
+
+## Tools used
+
+| Tool | Role in this repository |
+| --- | --- |
+| Python | [ml_impact.py](ml_impact.py) implements the CLI and decision rules. Uses `csv` to read tabular exports. |
+| Make | Runs the documented example and the local `unittest` suite. |
+| Python replay runner | Compares actual stdout with the checked-in baseline fixtures. |
+| Ruff and Bandit | Developer lint and static security checks through `make check`. |
 
 ## Run the project
 
-### Local setup
-
-Run `make verify` with Python 3 and Make installed.
-
-### CLI usage
+Use Python 3.10+ and Make. From the repository root:
 
 ```sh
 python3 ml_impact.py sample_ml_incidents.csv
 ```
 
-### Replay usage
+The fixture reports one model, two endpoints, and 11,500 affected users, giving SEV1. [Full expected output](examples/Demo%201.stdout.txt)
 
-Run `make replay` to replay the checked-in inputs. The runner compares stdout with the baseline, reports differences, and exits nonzero on regression.
+### Additional replay cases
 
-[Replay cases](examples/replay-manifest.json) · [Generated report](reports/replay.md) · [Rule implementation](docs/RULES.md)
+- **Last sample record in isolation** · `python3 ml_impact.py examples/last-record.csv` · [Expected output](examples/Last%20sample%20record%20in%20isolation.stdout.txt)
 
-### Run tests
+## Verify the project
 
-[Verification report](reports/verification.md) · [Business problem, sample behavior, and limitations](docs/CASE_STUDY.md)
+```sh
+make verify
+make replay
+```
 
+`make replay` checks the recorded cases and exits nonzero if the output changes.
+See the [developer guide](docs/DEVELOPMENT.md) for the pinned lint and security tools.
 
-### Limitations
+## Operating limits
 
-The verification report covers the bundled local examples. See the [case study](docs/CASE_STUDY.md) for project-specific assumptions and operating limits.
+Users are summed across rows. Deduplicate upstream if the same users can be counted in multiple records.
 
-## Development and security
-
-See the [developer setup, tool roles, and security checks](docs/DEVELOPMENT.md).
-
-[Local check results](reports/devsecops.md)
-
-## Runbook
-
-[Run, verify, and troubleshoot this project](docs/RUNBOOK.md)
+[Case study](docs/CASE_STUDY.md) · [Operator runbook](docs/RUNBOOK.md) · [Verification report](reports/verification.md)
