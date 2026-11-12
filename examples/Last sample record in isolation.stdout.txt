@@ -1,0 +1,1 @@
+{'models': 1, 'endpoints': 1, 'affected_users': 3500, 'severity': 'sev2'}
